@@ -1,0 +1,82 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    display: grid;
+    grid-template-columns: WithClassauto auto;
+}
+
+/* Header */
+#header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: black;
+    grid-column: span 2;
+    height: 12vh;
+    z-index: 2;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+}
+
+#headerLogo {
+    width: 80px;
+    height: 80px;
+}
+
+#headerTitle {
+    color: white;
+    font-size: 42px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Sidebar */
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: darkslategray;
+    width: 22vw;
+    height: 88vh;
+    z-index: 1;
+    padding: 25px;
+    gap: 25px;
+    box-sizing: border-box;
+}
+
+.sidebarSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionTitle {
+    color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.sectionItem {
+    display: flex;
+    align-items: center;
+    color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    text-indent: 10px;
+    height: 40px;
+}
+
+.sectionItem:hover {
+    background-color: rgba(0, 0, 0, 0.20);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Content General */
+#content {
+    background-color: whitesmoke;
+    width: 78vw;
+    height: 88vh;
+    z-index: 1;
+}
