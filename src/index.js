@@ -1,4 +1,4 @@
 import "./styles.css";
-import { makeUI } from "./UI";
+import { makeUI } from "./mainUI";
 
 document.addEventListener('DOMContentLoaded', makeUI);
