@@ -64,6 +64,9 @@ function makeSidebarSection(title, list) {
     addProject.textContent = "+ Add Project";
 
     addProject.onclick = function() {
+        const input = document.getElementById("descInput");
+        input.value = "";
+
         const modalContainer = document.getElementById("modalContainer");
         modalContainer.style.display = "block";
 
@@ -82,7 +85,10 @@ function makeSidebarSection(title, list) {
             } else if (projectTitle && !projectPresent) {
                 projectObjects.push({ title: projectTitle });
                 localStorage.setItem("projectObjects", JSON.stringify(projectObjects));
+                localStorage.setItem("currentList",projectTitle);
+
                 makeSidebar();
+                makeContent();
             }
         };
     }
