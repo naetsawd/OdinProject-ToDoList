@@ -1,10 +1,14 @@
-function makeTask(desc) {
+function makeTask(task) {
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("taskContainer");
     
     const taskDesc = document.createElement("p");
     taskDesc.classList.add("taskDesc");
-    taskDesc.textContent = desc;
+    taskDesc.textContent = task.text;
+
+    const taskDate = document.createElement("p");
+    taskDate.classList.add("taskDate");
+    taskDate.textContent = "Due on: " + task.date;
 
     const editTaskBtn = document.createElement("p");
     editTaskBtn.classList.add("editTaskBtn");
@@ -15,11 +19,19 @@ function makeTask(desc) {
         modalContainer.style.display = "block";
 
         const input = document.getElementById("descInput");
-        input.value = desc;
+        input.value = task.text;
+
+        const dateInput = document.getElementById("dateInput");
+        dateInput.value = task.date;
 
         const submitBtn = document.getElementById("button");
         submitBtn.onclick = function() {
-            saveNewTaskDesc(desc, submitDesc("edit"));
+            let newTask = submitDesc("edit");
+
+            if (newTask) {
+                console.log(newTask);
+                saveNewTaskDesc(task, newTask);
+            }
         }
     }
 
@@ -28,23 +40,27 @@ function makeTask(desc) {
     removeTaskBtn.textContent = "rm";
 
     removeTaskBtn.onclick = function () {
-        removeTask(desc);
+        removeTask(task.text);
     }
 
     taskContainer.appendChild(taskDesc);
     taskContainer.appendChild(editTaskBtn);
     taskContainer.appendChild(removeTaskBtn);
+    taskContainer.appendChild(taskDate);
 
     return taskContainer;
 }
 
 function getSavedTasks() {
-    let currentList = localStorage.getItem("currentList")
-    let tasksStorage = JSON.parse(localStorage.getItem(currentList+"Tasks")) || [];
-    localStorage.setItem(currentList+"Tasks", JSON.stringify(tasksStorage));
+    let currentList = localStorage.getItem("currentList");
+    let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
+
+    // if (tasksStorage.length > 1 && tasksStorage.every(task => task.date)) {
+    //     tasksStorage.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // }
 
     const taskElements = [];
-    
+
     tasksStorage.forEach(task => {
         const taskElement = makeTask(task);
         taskElements.push(taskElement);
@@ -53,38 +69,59 @@ function getSavedTasks() {
     return taskElements;
 }
 
-export function addAllTasks(allTasksContainer) {
+export function addAllTasks() {
+    const allTasksContainer = document.getElementById("allTasksContainer");
     allTasksContainer.innerHTML = "";
-    getSavedTasks().forEach(task => {
-        allTasksContainer.appendChild(task);
-    });
+
+    localStorage.setItem("TodayTasks", JSON.stringify(todayTasks()));
+    localStorage.setItem("This MonthTasks", JSON.stringify(monthTasks()));
+
+    if (getSavedTasks().length !== 0) {
+        getSavedTasks().forEach(task => {
+            allTasksContainer.appendChild(task);
+        });
+    } else {
+        const addTaskMsg = document.createElement("p")
+        addTaskMsg.id = "addTaskMsg"
+        allTasksContainer.textContent = "Add a task to get started!";
+
+        allTasksContainer.appendChild(addTaskMsg);
+    }
 }
 
-function saveNewTaskDesc(oldDesc,newDesc) {
+function saveNewTaskDesc(oldTask, newTask) {
     let currentList = localStorage.getItem("currentList");
     let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
-    let index = tasksStorage.indexOf(oldDesc);
+    
+    let index = tasksStorage.findIndex(task => task.text === oldTask.text && task.date === oldTask.date);
 
-    if (newDesc === null || newDesc.trim() === "") {
-        newDesc = oldDesc;
+    if (newTask === null || newTask.text.trim() === "") {
+        newTask = oldTask;
     } else {
-        tasksStorage[index] = newDesc;
+        tasksStorage[index] = newTask;
     }
 
     localStorage.setItem(currentList + "Tasks", JSON.stringify(tasksStorage));
 
-    addAllTasks(allTasksContainer);
+    addAllTasks();
 }
 
-export function removeTask(desc) {
-    let currentList = localStorage.getItem("currentList");
-    let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
+export function removeTask(text) {
+    let currentList = localStorage.getItem("currentList");;
 
-    tasksStorage = tasksStorage.filter(task => task !== desc);
+    if (currentList === "Today" || currentList === "This Month") {
+        let tasksStorage = JSON.parse(localStorage.getItem("InboxsTasks")) || [];
+        tasksStorage = tasksStorage.filter(task => task.text !== text);
 
-    localStorage.setItem(currentList + "Tasks", JSON.stringify(tasksStorage));
+        localStorage.setItem("InboxTasks", JSON.stringify(tasksStorage));
+    } else {
+        let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
+        tasksStorage = tasksStorage.filter(task => task.text !== text)
 
-    addAllTasks(allTasksContainer);
+        localStorage.setItem(currentList + "Tasks", JSON.stringify(tasksStorage));
+    }
+
+    addAllTasks();
 }
 
 export function modal() {
@@ -101,6 +138,7 @@ export function modal() {
     closeBtn.onclick = function() {
         modalContainer.style.display = "none";
         input.value = "";
+        dateInput.value = ""; // Clear the date input as well
     }
 
     const modalContent = document.createElement("div");
@@ -108,30 +146,42 @@ export function modal() {
 
     const modalInputContainer = document.createElement("div");
     modalInputContainer.id = "modalInputContainer";
-    
+
     const label = document.createElement("label");
     label.id = "label";
     label.setAttribute("for", "descInput");
     label.textContent = "Enter Description: ";
-    
+
     const input = document.createElement("input");
     input.type = "text";
     input.id = "descInput";
-    
+
+    const dateLabel = document.createElement("label");
+    dateLabel.id = "dateLabel";
+    dateLabel.setAttribute("for", "dateInput");
+    dateLabel.textContent = "Select Date: ";
+
+    const dateInput = document.createElement("input");
+    dateInput.type = "date";
+    dateInput.id = "dateInput";
+
     const submitBtn = document.createElement("button");
-    submitBtn.id = "button"
+    submitBtn.id = "button";
     submitBtn.textContent = "Submit";
 
     window.onclick = function(event) {
         if (event.target == modalContainer) {
             modalContainer.style.display = "none";
             input.value = "";
+            dateInput.value = "";
         }
     }
 
     modalHeader.appendChild(closeBtn);
     modalInputContainer.appendChild(label);
     modalInputContainer.appendChild(input);
+    modalInputContainer.appendChild(dateLabel);
+    modalInputContainer.appendChild(dateInput);
     modalInputContainer.appendChild(submitBtn);
     modalContent.appendChild(modalHeader);
     modalContent.appendChild(modalInputContainer);
@@ -141,27 +191,45 @@ export function modal() {
 }
 
 export function submitDesc(type) {
-    const input = document.getElementById("descInput").value;
     const modalContainer = document.getElementById("modalContainer");
-
-    let currentList = localStorage.getItem("currentList");
-    let tasksStorage = JSON.parse(localStorage.getItem(currentList+"Tasks")) || [];
-    let taskPresent = tasksStorage.filter(task => task === input.trim());
+    const descInput = document.getElementById("descInput").value;
+    const dateInput = document.getElementById("dateInput").value;
     
-    if (input === null || input.trim() === "" && type !== "project") {
-        alert("Please enter a description");
-    } else if (taskPresent.length !== 0 && type !== "project") {
-        alert("Please enter a unique description");
+    let selectedDate = new Date(dateInput);
+    let currentList = localStorage.getItem("currentList");
+    let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
+    let taskPresent = tasksStorage.some(task => task.text === descInput.trim() && task.date === selectedDate.toJSON().substring(0, 10));
+
+    if (!descInput || !dateInput && type !== "project") {
+        alert("Please do not leave fields blank.");
+    } else if (taskPresent && type !== "project") {
+        alert("Please enter a unique description and date.");
     } else {
         modalContainer.style.display = "none";
 
-        if (type === "add") {
-            tasksStorage.push(input.trim());
-        } else {
-            return input.trim();
+        if (type === "add" || type === "edit") {
+            return ({
+                text: descInput.trim(),
+                date: selectedDate.toJSON().substring(0, 10)
+            });
+        } else if (type === "project") {
+            return descInput;
         }
     }
+}
 
-    localStorage.setItem(currentList+"Tasks", JSON.stringify(tasksStorage));
-    addAllTasks(allTasksContainer);
+function todayTasks() {
+    let inboxList = JSON.parse(localStorage.getItem("InboxTasks")) || [];
+    let todayDate = new Date().toISOString().substring(0, 10);
+    let todayTasks = inboxList.filter(task => task.date === todayDate);
+
+    return todayTasks;
+}
+
+function monthTasks() {
+    let inboxList = JSON.parse(localStorage.getItem("InboxTasks")) || [];
+    let currentMonthYear = new Date().toISOString().substring(0, 7);
+    let thisMonthTasks = inboxList.filter(task => task.date.startsWith(currentMonthYear));
+
+    return thisMonthTasks;
 }

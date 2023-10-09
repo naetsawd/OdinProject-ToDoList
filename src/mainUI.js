@@ -67,6 +67,12 @@ function makeSidebarSection(title, list) {
         const input = document.getElementById("descInput");
         input.value = "";
 
+        const dateLabel = document.getElementById("dateLabel");
+        dateLabel.style.display = "none";
+
+        const dateInput = document.getElementById("dateInput");
+        dateInput.style.display = "none";
+
         const modalContainer = document.getElementById("modalContainer");
         modalContainer.style.display = "block";
 
@@ -147,12 +153,27 @@ function makeContent() {
     addTaskBtn.src = addIcon;
     
     addTaskBtn.onclick = function() {
+        const input = document.getElementById("descInput");
+        input.value = "";
+
+        const dinput = document.getElementById("dateInput");
+        dinput.value = "";
+
         const modalContainer = document.getElementById("modalContainer");
         modalContainer.style.display = "block";
 
         const submitBtn = document.getElementById("button");
         submitBtn.onclick = function() {
-            submitDesc("add");
+            let currentList = localStorage.getItem("currentList");
+            let taskDesc = submitDesc("add");
+            let tasksStorage = JSON.parse(localStorage.getItem(currentList + "Tasks")) || [];
+            
+            if (taskDesc) {
+                tasksStorage.push(taskDesc);
+                localStorage.setItem(currentList + "Tasks", JSON.stringify(tasksStorage));
+    
+                addAllTasks();
+            }
         }
     }
 
@@ -161,8 +182,6 @@ function makeContent() {
 
     const allTasksContainer = document.createElement("div");
     allTasksContainer.id = "allTasksContainer";
-    
-    addAllTasks(allTasksContainer);
 
     titleContainer.appendChild(removeProjectBtn);
     titleContainer.appendChild(listTitle);
@@ -184,6 +203,8 @@ function makeContent() {
     content.appendChild(line);
     content.appendChild(allTasksContainer);
     content.appendChild(modal());
+
+    addAllTasks();
 }
 
 function removeProject(projectName) {
@@ -193,8 +214,8 @@ function removeProject(projectName) {
         projectObjects.splice(projectIndex, 1);
 
         localStorage.setItem("projectObjects", JSON.stringify(projectObjects));
-
         localStorage.setItem("currentList", "Inbox");
+        
         makeSidebar();
         makeContent();
     }
