@@ -1,5 +1,6 @@
 import logo from './images/logo.svg';
 import addIcon from './images/plus.png';
+import minusIcon from './images/minus.png';
 import {addAllTasks, modal, submitDesc} from "./tasks.js";
 
 const plannerObjects = [
@@ -8,10 +9,8 @@ const plannerObjects = [
     { title: "This Month"},
 ];
 
-const projectObjects = [
-    { title: "P1" },
-    { title: "P2" }
-];
+let projectObjects = localStorage.getItem("projectObjects");
+projectObjects = JSON.parse(projectObjects) || [];
 
 const sectionLists = [
     { title: "Planner", list: plannerObjects },
@@ -20,7 +19,7 @@ const sectionLists = [
 
 export function makeUI() {
     if (!localStorage.getItem("currentList")) {
-        localStorage.setItem("currentList", "Today");
+        localStorage.setItem("currentList", "Inbox");
     }
 
     makeHeader();
@@ -64,6 +63,30 @@ function makeSidebarSection(title, list) {
     addProject.classList.add("sectionItem")
     addProject.textContent = "+ Add Project";
 
+    addProject.onclick = function() {
+        const modalContainer = document.getElementById("modalContainer");
+        modalContainer.style.display = "block";
+
+        const submitBtn = document.getElementById("button");
+
+        submitBtn.onclick = function() {
+            let projectTitle = submitDesc("project");
+            let projectPresent = projectObjects.some(project => project.title.trim() === projectTitle.trim());
+
+            if (!projectTitle) {
+                alert("Please enter a project name");
+                modalContainer.style.display = "block";
+            } else if(projectPresent) {
+                alert("Please enter a unique project name");
+                modalContainer.style.display = "block";
+            } else if (projectTitle && !projectPresent) {
+                projectObjects.push({ title: projectTitle });
+                localStorage.setItem("projectObjects", JSON.stringify(projectObjects));
+                makeSidebar();
+            }
+        };
+    }
+
     section.appendChild(sectionTitle);
 
     if (title == "Projects") {section.appendChild(addProject)};
@@ -98,6 +121,17 @@ function makeContent() {
     const titleContainer = document.createElement("div");
     titleContainer.id = "titleContainer";
 
+    const removeProjectBtn = document.createElement("img");
+    removeProjectBtn.id = "removeProjectBtn";
+    removeProjectBtn.src = minusIcon;
+    removeProjectBtn.onclick = function() {
+        const confirmRemove = window.confirm("Are you sure want to remove " + listTitle.textContent + "?");
+
+        if (confirmRemove) {
+            removeProject(listTitle.textContent);
+        }
+    }
+
     const listTitle = document.createElement("p");
     listTitle.id = "listTitle";
     listTitle.textContent = localStorage.getItem("currentList");
@@ -105,13 +139,7 @@ function makeContent() {
     const addTaskBtn = document.createElement("img");
     addTaskBtn.id = "addTaskBtn";
     addTaskBtn.src = addIcon;
-
-    const line = document.createElement("div");
-    line.id = "line";
-
-    const allTasksContainer = document.createElement("div");
-    allTasksContainer.id = "allTasksContainer";
-
+    
     addTaskBtn.onclick = function() {
         const modalContainer = document.getElementById("modalContainer");
         modalContainer.style.display = "block";
@@ -121,17 +149,47 @@ function makeContent() {
             submitDesc("add");
         }
     }
+
+    const line = document.createElement("div");
+    line.id = "line";
+
+    const allTasksContainer = document.createElement("div");
+    allTasksContainer.id = "allTasksContainer";
     
     addAllTasks(allTasksContainer);
 
+    titleContainer.appendChild(removeProjectBtn);
     titleContainer.appendChild(listTitle);
+    titleContainer.appendChild(addTaskBtn);
 
-    if (listTitle.textContent !== "Today" && listTitle.textContent !== "This Month") {
-        titleContainer.appendChild(addTaskBtn);
+    if (listTitle.textContent === "Today" || listTitle.textContent === "This Month") {
+        addTaskBtn.style.display = "none";
+    } else {
+        addTaskBtn.style.display = "block";
     }
 
+    if (listTitle.textContent === "Inbox" || listTitle.textContent === "Today" || listTitle.textContent === "This Month") {
+        removeProjectBtn.style.display = "none";
+    } else {
+        removeProjectBtn.style.display = "block";
+    }
+    
     content.appendChild(titleContainer);
     content.appendChild(line);
     content.appendChild(allTasksContainer);
     content.appendChild(modal());
+}
+
+function removeProject(projectName) {
+    const projectIndex = projectObjects.findIndex(project => project.title.trim() === projectName.trim());
+
+    if (projectIndex !== -1) {
+        projectObjects.splice(projectIndex, 1);
+
+        localStorage.setItem("projectObjects", JSON.stringify(projectObjects));
+
+        localStorage.setItem("currentList", "Inbox");
+        makeSidebar();
+        makeContent();
+    }
 }

@@ -100,6 +100,7 @@ export function modal() {
 
     closeBtn.onclick = function() {
         modalContainer.style.display = "none";
+        input.value = "";
     }
 
     const modalContent = document.createElement("div");
@@ -124,6 +125,7 @@ export function modal() {
     window.onclick = function(event) {
         if (event.target == modalContainer) {
             modalContainer.style.display = "none";
+            input.value = "";
         }
     }
 
@@ -139,24 +141,24 @@ export function modal() {
 }
 
 export function submitDesc(type) {
-    const desc = document.getElementById("descInput").value;
+    const input = document.getElementById("descInput").value;
     const modalContainer = document.getElementById("modalContainer");
 
     let currentList = localStorage.getItem("currentList");
     let tasksStorage = JSON.parse(localStorage.getItem(currentList+"Tasks")) || [];
-    let taskPresent = tasksStorage.filter(task => task === desc.trim());
-
-    if (desc === null || desc.trim() === "") {
+    let taskPresent = tasksStorage.filter(task => task === input.trim());
+    
+    if (input === null || input.trim() === "" && type !== "project") {
         alert("Please enter a description");
-    } else if (taskPresent.length !== 0) {
+    } else if (taskPresent.length !== 0 && type !== "project") {
         alert("Please enter a unique description");
     } else {
+        modalContainer.style.display = "none";
+
         if (type === "add") {
-            tasksStorage.push(desc.trim());
-            modalContainer.style.display = "none";
-        } else if (type === "edit") {
-            modalContainer.style.display = "none";
-            return desc.trim();
+            tasksStorage.push(input.trim());
+        } else {
+            return input.trim();
         }
     }
 
