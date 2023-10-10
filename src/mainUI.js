@@ -1,16 +1,18 @@
 import logo from "./images/logo.svg";
 import addIcon from "./images/plus.png";
 import minusIcon from "./images/minus.png";
-import {addAllTasks, modal, submitDesc} from "./tasks.js";
+import {addAllTasks} from "./tasks.js";
+import {modal, submitDesc} from "./modal.js";
+// import {removeProject} from "./buttons.js";
+
+let projectObjects = localStorage.getItem("projectObjects");
+projectObjects = JSON.parse(projectObjects) || [];
 
 const plannerObjects = [
     { title: "Inbox" },
     { title: "Today" },
     { title: "This Month"},
 ];
-
-let projectObjects = localStorage.getItem("projectObjects");
-projectObjects = JSON.parse(projectObjects) || [];
 
 const sectionLists = [
     { title: "Planner", list: plannerObjects },
@@ -42,7 +44,7 @@ function makeHeader() {
     header.appendChild(headerTitle);
 }
 
-function makeSidebar() {
+export function makeSidebar() {
     const sidebar = document.getElementById("sidebar");
     sidebar.innerHTML = "";
 
@@ -75,6 +77,7 @@ function makeSidebarSection(title, list) {
 
         const textInput = document.getElementById("textInput");
         textInput.value = "";
+        textInput.maxLength = 35;
 
         const dateLabel = document.getElementById("dateLabel");
         dateLabel.style.display = "none";
@@ -132,7 +135,7 @@ function makeSidebarSection(title, list) {
     return section;
 }
 
-function makeContent() {
+export function makeContent() {
     const content = document.getElementById("content")
     content.innerHTML = "";
 
@@ -170,6 +173,7 @@ function makeContent() {
 
         const textInput = document.getElementById("textInput");
         textInput.value = "";
+        textInput.maxLength = 200;
 
         const dateInput = document.getElementById("dateInput");
         dateInput.value = "";
@@ -219,15 +223,18 @@ function makeContent() {
     addAllTasks();
 }
 
-function removeProject(projectName) {
+export function removeProject(projectName) {
+    let currentList = localStorage.getItem("currentList");
+    
     const projectIndex = projectObjects.findIndex(project => project.title.trim() === projectName.trim());
 
     if (projectIndex !== -1) {
         projectObjects.splice(projectIndex, 1);
 
+        localStorage.removeItem(currentList + "Tasks");
         localStorage.setItem("projectObjects", JSON.stringify(projectObjects));
         localStorage.setItem("currentList", "Inbox");
-        
+
         makeSidebar();
         makeContent();
     }

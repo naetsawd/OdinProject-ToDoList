@@ -53,6 +53,7 @@ body {
     padding: 25px;
     gap: 25px;
     box-sizing: border-box;
+    overflow: auto;
 }
 
 .sidebarSection {
@@ -76,6 +77,7 @@ body {
     text-indent: 10px;
     height: 40px;
     transition: all .2s ease-out;
+    overflow: hidden;
 }
 
 .sectionItem:hover {
@@ -124,6 +126,7 @@ body {
     font-size: 36px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
+    overflow: hidden;
 }
 
 #addTaskBtn {
@@ -284,7 +287,7 @@ body {
     border-radius: 10px;
 }
 
-#textInput[type=textInput], #dateInput[type=date] {
+#textInput[type=text], #dateInput[type=date] {
     padding: 5px;
   }
 
