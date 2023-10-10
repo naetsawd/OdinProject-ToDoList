@@ -1,4 +1,4 @@
-# Not Unorganized : OdinProject Restaurant Page Project
+# Not Unorganized : OdinProject Todo List
 
 **Note:** The website is not mobile responsive, needs some icons in sidebar, could add settings section where user can customize colors, disallow adding tasks from pior date and change color of overdue tasks. These may be improvements done in the future, however it is not certain.
 
