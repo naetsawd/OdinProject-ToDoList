@@ -1,6 +1,6 @@
-import logo from './images/logo.svg';
-import addIcon from './images/plus.png';
-import minusIcon from './images/minus.png';
+import logo from "./images/logo.svg";
+import addIcon from "./images/plus.png";
+import minusIcon from "./images/minus.png";
 import {addAllTasks, modal, submitDesc} from "./tasks.js";
 
 const plannerObjects = [
@@ -64,8 +64,17 @@ function makeSidebarSection(title, list) {
     addProject.textContent = "+ Add Project";
 
     addProject.onclick = function() {
-        const input = document.getElementById("descInput");
-        input.value = "";
+        const modalContainer = document.getElementById("modalContainer");
+        modalContainer.style.display = "block";
+
+        const actionName = document.getElementById("actionName");
+        actionName.textContent = "Add Project"
+
+        const textLabel = document.getElementById("textLabel");
+        textLabel.textContent = "Enter Project Name: ";
+
+        const textInput = document.getElementById("textInput");
+        textInput.value = "";
 
         const dateLabel = document.getElementById("dateLabel");
         dateLabel.style.display = "none";
@@ -73,17 +82,14 @@ function makeSidebarSection(title, list) {
         const dateInput = document.getElementById("dateInput");
         dateInput.style.display = "none";
 
-        const modalContainer = document.getElementById("modalContainer");
-        modalContainer.style.display = "block";
-
-        const submitBtn = document.getElementById("button");
+        const submitBtn = document.getElementById("submitBtn");
 
         submitBtn.onclick = function() {
             let projectTitle = submitDesc("project");
             let projectPresent = projectObjects.some(project => project.title.trim() === projectTitle.trim());
 
             if (!projectTitle) {
-                alert("Please enter a project name");
+                alert("Please enter a project name: ");
                 modalContainer.style.display = "block";
             } else if(projectPresent) {
                 alert("Please enter a unique project name");
@@ -153,16 +159,22 @@ function makeContent() {
     addTaskBtn.src = addIcon;
     
     addTaskBtn.onclick = function() {
-        const input = document.getElementById("descInput");
-        input.value = "";
-
-        const dinput = document.getElementById("dateInput");
-        dinput.value = "";
-
         const modalContainer = document.getElementById("modalContainer");
         modalContainer.style.display = "block";
 
-        const submitBtn = document.getElementById("button");
+        const actionName = document.getElementById("actionName");
+        actionName.textContent = "Add Task"
+
+        const textLabel = document.getElementById("textLabel");
+        textLabel.textContent = "Enter Description: ";
+
+        const textInput = document.getElementById("textInput");
+        textInput.value = "";
+
+        const dateInput = document.getElementById("dateInput");
+        dateInput.value = "";
+
+        const submitBtn = document.getElementById("submitBtn");
         submitBtn.onclick = function() {
             let currentList = localStorage.getItem("currentList");
             let taskDesc = submitDesc("add");
