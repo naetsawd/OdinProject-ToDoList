@@ -1,9 +1,9 @@
 import logo from "./images/logo.svg";
 import addIcon from "./images/plus.png";
 import minusIcon from "./images/minus.png";
+import githubLogo from "./images/githubLogo.svg";
 import {addAllTasks} from "./tasks.js";
 import {modal, submitDesc} from "./modal.js";
-// import {removeProject} from "./buttons.js";
 
 let projectObjects = localStorage.getItem("projectObjects");
 projectObjects = JSON.parse(projectObjects) || [];
@@ -27,6 +27,7 @@ export function makeUI() {
     makeHeader();
     makeSidebar();
     makeContent();
+    makeFooter();
 }
 
 function makeHeader() {
@@ -238,4 +239,28 @@ export function removeProject(projectName) {
         makeSidebar();
         makeContent();
     }
+}
+
+function makeFooter() {
+    const footer = document.getElementById("footer");
+    footer.id = "footer";
+
+    const footerText = document.createElement("p");
+    footerText.id = "footerText";
+    footerText.textContent = "Designed & Built by Dechsit Naetsawan";
+
+    const link = document.createElement("a");
+    link.href = "https://github.com/naetsawd/OdinProject-ToDoList";
+    link.target = "_blank";
+
+    const icon = document.createElement("img");
+    icon.id = ("githubIcon");
+    icon.src = (githubLogo);
+
+    link.appendChild(icon);
+
+    footer.appendChild(link);
+    footer.appendChild(footerText);
+
+    return footer;
 }

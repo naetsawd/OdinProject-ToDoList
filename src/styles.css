@@ -13,6 +13,8 @@
 
 body {
     display: grid;
+    grid-template-columns: 22vw 78vw;
+    grid-template-rows: 12vh 84vh 4vh;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
 }
@@ -26,7 +28,6 @@ body {
     justify-content: flex-start;
     background-color: black;
     grid-column: span 2;
-    height: 12vh;
     z-index: 2;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
 }
@@ -47,8 +48,6 @@ body {
     display: flex;
     flex-direction: column;
     background-color: darkslategray;
-    width: 22vw;
-    height: 88vh;
     z-index: 1;
     padding: 25px;
     gap: 25px;
@@ -92,8 +91,6 @@ body {
     display: flex;
     flex-direction: column;
     background-color: whitesmoke;
-    width: 78vw;
-    height: 88vh;
     z-index: 1;
 }
 
@@ -220,6 +217,27 @@ body {
     cursor: pointer;
     transform-origin: 50% 50%;
     transition: all .2s ease-out;
+}
+
+/* Footer */
+#footer {
+    background-color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-column: span 2;
+}
+
+#footerText {
+    color: white;
+    font-size: 15px;
+}
+
+#githubIcon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-right: 2px;
 }
 
 /* Modal */
