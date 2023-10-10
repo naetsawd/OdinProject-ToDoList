@@ -1,8 +1,8 @@
 # Not Unorganized : OdinProject Restaurant Page Project
 
-**Note:** The website is not mobile responsive, need some icons in sidebar, could add settings section where user can customize colors, disallow adding tasks from pior date and change color of overdue tasks. These may be an improvements done in the future, however it is not certain.
+**Note:** The website is not mobile responsive, needs some icons in sidebar, could add settings section where user can customize colors, disallow adding tasks from pior date and change color of overdue tasks. These may be improvements done in the future, however it is not certain.
 
-This website was made for the OdinProject's Todo List assignment. The assignment's purpose was to make apply SOLID Principles.
+This website was made for the OdinProject's Todo List assignment. The assignment's purpose was to  apply SOLID Principles.
 
 ## Live Demo:
 [Not Unorganized](https://naetsawd.github.io/OdinProject-ToDoList)
@@ -17,4 +17,4 @@ At first glance it doesn't make sense that a todo list website is called "Unorga
 - HTML5
 - CSS3
 - Node.js
-- Webpack and Other Node.js Modules)
+- Webpack and Other Node.js Modules
